@@ -5,8 +5,9 @@ import requests
 # URL de la boletería individual para el clásico
 URL = "https://www.tribunaverde.com/event/an-vs-dim--liga-betplay-dimayor-2026-ii-boleteria-individual"
 
-TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
-CHAT_ID = os.environ.get("CHAT_ID")
+# Token y Chat ID definidos directamente para asegurar la conexión
+TELEGRAM_TOKEN = "8851647339:AAHriVerlcI0MvZcJ-ugtFaPa6bPVwwuNIk"
+CHAT_ID = "983154068"
 
 
 def check_tickets():
