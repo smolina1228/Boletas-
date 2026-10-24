@@ -5,7 +5,7 @@ import requests
 # URL de la boletería individual para el clásico
 URL = "https://www.tribunaverde.com/event/an-vs-dim--liga-betplay-dimayor-2026-ii-boleteria-individual"
 
-# Token y Chat ID definidos directamente con el token correcto
+# Token y Chat ID definidos directamente
 TELEGRAM_TOKEN = "8851647339:AAHriVerlci0MvZcJ-ugtFaPa6bPVwwuNIk"
 CHAT_ID = "983154068"
 
@@ -18,9 +18,13 @@ def check_tickets():
     }
     try:
         response = requests.get(URL, headers=headers, timeout=15)
+        html_text = response.text
 
-        # Revisa si la palabra "Agotado" ya NO aparece en el texto
-        if not re.search(r"\bAgotado\b", response.text, re.IGNORECASE):
+        # Verificamos si la palabra "agotado" (en minúsculas/mayúsculas) sigue estando en la página
+        esta_agotado = "agotado" in html_text.lower()
+
+        if not esta_agotado:
+            # Solo si la palabra "agotado" desaparece por completo, envía la alerta real
             message = (
                 "🚨 ¡ALERTA BOLETAS DISPONIBLES! 🚨\n\nSe detectó disponibilidad para"
                 f" el clásico Nacional vs. DIM.\n\nCompra aquí: {URL}"
@@ -30,13 +34,13 @@ def check_tickets():
             )
             res = requests.post(telegram_url, data={"chat_id": CHAT_ID, "text": message})
             
-            # Validamos si Telegram realmente aceptó el mensaje
             if res.status_code == 200:
-                print("¡Alerta enviada a Telegram con éxito!")
+                print("¡Alerta real enviada a Telegram con éxito!")
             else:
                 print(f"❌ Error de Telegram ({res.status_code}): {res.text}")
         else:
-            print("Sigue agotado en Tribuna Verde.")
+            print("Sigue agotado en Tribuna Verde. No se envía alerta.")
+            
     except Exception as e:
         print(f"Error al verificar la página: {e}")
 
